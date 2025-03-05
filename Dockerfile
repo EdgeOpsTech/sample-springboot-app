@@ -1,14 +1,25 @@
-# Use an official JDK image as a base
-FROM openjdk:17-jdk-alpine
+# Use OpenJDK as the base image
+FROM eclipse-temurin:17-jdk-alpine
 
-# Set the working directory inside the container
-WORKDIR /app
+# Set environment variables for GHCR
+ARG SOURCE_REGISTRY=ghcr.io
+ARG SOURCE_IMAGE=edgeopstech/sample-springboot-app
+ARG SOURCE_IMAGE_TAG=latest
 
-# Copy the JAR file from Maven build output into the container
-COPY target/sample-springboot-app-1.0.0.jar app.jar
+# Pull image from GitHub Container Registry (GHCR)
+FROM ${SOURCE_REGISTRY}/${SOURCE_IMAGE}:${SOURCE_IMAGE_TAG}
 
-# Expose port 9090 inside the container
+# Set JAR file location (assuming it's built using Maven/Gradle)
+ARG JAR_FILE=target/*.jar
+
+# Copy the JAR file into the container
+COPY ${JAR_FILE} /opt/app.jar
+
+# Expose the application port
 EXPOSE 9090
 
-# Run the application and ensure Spring Boot uses port 9090
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Set working directory
+WORKDIR /opt
+
+# Run the application with OpenTelemetry support (if required)
+ENTRYPOINT ["java", "-javaagent:/opt/opentelemetry-javaagent.jar", "-jar", "/opt/app.jar"]
