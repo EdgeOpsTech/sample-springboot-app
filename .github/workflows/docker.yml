@@ -22,11 +22,11 @@ jobs:
       - name: Build with Maven
         run: mvn clean package
 
-      - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
       - name: Convert repository owner to lowercase
         run: echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build and tag Docker image
         run: |
