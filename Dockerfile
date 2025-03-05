@@ -1,12 +1,12 @@
 # Use OpenJDK as the base image
 FROM eclipse-temurin:17-jdk-alpine
 
-# Set environment variables for GHCR
+# Define build arguments with default values
 ARG SOURCE_REGISTRY=ghcr.io
 ARG SOURCE_IMAGE=edgeopstech/sample-springboot-app
 ARG SOURCE_IMAGE_TAG=latest
 
-# Pull image from GitHub Container Registry (GHCR)
+# Use the provided build arguments
 FROM ${SOURCE_REGISTRY}/${SOURCE_IMAGE}:${SOURCE_IMAGE_TAG}
 
 # Set JAR file location (assuming it's built using Maven/Gradle)
