@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_sample_springboot_app_1741184960048-pr-trigger-input-set
+  identifier: Build_sample_springboot_app_1741184960048prtriggerinputset
+  orgIdentifier: default
+  projectIdentifier: GHCR_Demo_Project
+  pipeline:
+    identifier: Build_sample_springboot_app_1741184960048
+    properties:
+      ci:
+        codebase:
+          build:
+            type: PR
+            spec:
+              number: <+trigger.prNumber>
