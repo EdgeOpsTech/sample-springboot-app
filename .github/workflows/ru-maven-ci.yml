@@ -24,18 +24,29 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
+      - name: Run Tests
+        run: mvn test
+
       - name: Log in to GitHub Container Registry (GHCR)
         run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
+      - name: Convert repository owner to lowercase
+        run: echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Build and Tag Docker Image
         run: |
-          docker build -t ghcr.io/edgeopstech/sample-springboot-app:latest .
-          docker tag ghcr.io/edgeopstech/sample-springboot-app:latest ghcr.io/edgeopstech/sample-springboot-app:${{ github.run_number }}
+          docker build \
+            --build-arg SOURCE_REGISTRY=ghcr.io \
+            --build-arg SOURCE_IMAGE=$REPO_OWNER/sample-springboot-app \
+            --build-arg SOURCE_IMAGE_TAG=latest \
+            -t ghcr.io/$REPO_OWNER/sample-springboot-app:latest .
+
+          docker tag ghcr.io/$REPO_OWNER/sample-springboot-app:latest ghcr.io/$REPO_OWNER/sample-springboot-app:${{ github.run_number }}
 
       - name: Push Docker Image to GHCR
         run: |
-          docker push ghcr.io/edgeopstech/sample-springboot-app:latest
-          docker push ghcr.io/edgeopstech/sample-springboot-app:${{ github.run_number }}
+          docker push ghcr.io/$REPO_OWNER/sample-springboot-app:latest
+          docker push ghcr.io/$REPO_OWNER/sample-springboot-app:${{ github.run_number }}
 
   deploy:
     needs: build

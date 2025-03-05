@@ -1,0 +1,24 @@
+name: Deploy Spring Boot App to Harness K8s
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Harness Pipeline for Deployment
+        run: |
+          curl -X POST "https://app.harness.io/gateway/pipeline/api/v1/execution" \
+          -H "x-api-key: ${{ secrets.HARNESS_NG_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+                "orgIdentifier": "default",
+                "projectIdentifier": "GHCR_Demo_Project",
+                "pipelineIdentifier": "ru-harness-ng-k8s-deploy",
+                "inputSetReferences": [],
+                "runtimeInput": {
+                  "artifactTag": "latest"
+                }
+              }'

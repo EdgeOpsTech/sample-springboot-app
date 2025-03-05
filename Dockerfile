@@ -15,7 +15,7 @@ ARG JAR_FILE=target/*.jar
 # Copy the JAR file into the container
 COPY ${JAR_FILE} /opt/app.jar
 
-# Expose the application port
+# Expose port 9090 instead of 8080
 EXPOSE 9090
 
 # Set working directory
