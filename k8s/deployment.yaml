@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-springboot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-springboot
+  template:
+    metadata:
+      labels:
+        app: sample-springboot
+    spec:
+      containers:
+        - name: sample-springboot
+          image: ghcr.io/edgeopstech/sample-springboot-app:latest
+          ports:
+            - containerPort: 8080
