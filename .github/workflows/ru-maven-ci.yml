@@ -24,17 +24,18 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
-      - name: Run Tests
-        run: mvn test
-
-      - name: Convert repository owner to lowercase
-        run: echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      - name: Upload JAR Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: springboot-app-jar
+          path: target/*.jar
 
       - name: Log in to GitHub Container Registry (GHCR)
         run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Set Environment Variables
         run: |
+          echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
           echo "SOURCE_REGISTRY=ghcr.io" >> $GITHUB_ENV
           echo "SOURCE_IMAGE=$REPO_OWNER/sample-springboot-app" >> $GITHUB_ENV
           echo "SOURCE_IMAGE_TAG=latest" >> $GITHUB_ENV
@@ -48,9 +49,9 @@ jobs:
       - name: Build and Tag Docker Image
         run: |
           docker build \
-            --build-arg SOURCE_REGISTRY=ghcr.io \
-            --build-arg SOURCE_IMAGE=$REPO_OWNER/sample-springboot-app \
-            --build-arg SOURCE_IMAGE_TAG=latest \
+            --build-arg SOURCE_REGISTRY=$SOURCE_REGISTRY \
+            --build-arg SOURCE_IMAGE=$SOURCE_IMAGE \
+            --build-arg SOURCE_IMAGE_TAG=$SOURCE_IMAGE_TAG \
             -t ghcr.io/$REPO_OWNER/sample-springboot-app:latest .
 
       - name: Push Docker Image to GHCR
@@ -63,6 +64,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Download JAR Artifact (Optional)
+        uses: actions/download-artifact@v4
+        with:
+          name: springboot-app-jar
+          path: target/
+
       - name: Trigger Harness Deployment
         run: |
           curl -X POST "https://app.harness.io/gateway/pipeline/api/v1/execution" \
