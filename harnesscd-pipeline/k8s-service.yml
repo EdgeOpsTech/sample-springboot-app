@@ -1,6 +1,6 @@
 service:
-  name: sample-springboot-service
-  identifier: sample-springboot-service
+  name: springbootapp
+  identifier: springbootapp
   orgIdentifier: default
   projectIdentifier: GHCR_Demo_Project
   serviceDefinition:
@@ -17,11 +17,11 @@ service:
                   connectorRef: harnessgitconnector
                   gitFetchType: Branch
                   folderPath: /
-                  repoName: EdgeOpsTech/sample-springboot-app
+                  repoName: sample-springboot-app
                   branch: main
-              subChartPath: null
+              subChartPath: ""
               valuesPaths:
-                - values.yaml
+                - /sprigboot-chart/values.yaml
               skipResourceVersioning: false
               enableDeclarativeRollback: false
               helmVersion: V3

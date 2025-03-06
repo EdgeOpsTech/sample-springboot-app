@@ -18,6 +18,7 @@ spec:
       labels:
         app: {{ include "springboot-chart.name" . }}
         release: {{ .Release.Name }}
+
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -25,16 +26,27 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 80
               protocol: TCP
-          env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: {{ .Values.env.SPRING_PROFILES_ACTIVE }}
-            - name: DATABASE_URL
-              value: {{ .Values.env.DATABASE_URL }}
-            - name: DATABASE_USERNAME
-              value: {{ .Values.env.DATABASE_USERNAME }}
-            - name: DATABASE_PASSWORD
-              value: {{ .Values.env.DATABASE_PASSWORD }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
