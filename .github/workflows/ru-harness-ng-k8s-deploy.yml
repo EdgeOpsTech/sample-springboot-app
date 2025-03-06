@@ -8,9 +8,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Trigger Harness Pipeline for Deployment
+      - name: Debug Harness API Request
         run: |
-          curl -X POST "https://app.harness.io/gateway/pipeline/api/v1/execution" \
+          echo "Triggering Harness Deployment with the following payload:"
+          echo '{
+            "orgIdentifier": "default",
+            "projectIdentifier": "GHCR_Demo_Project",
+            "pipelineIdentifier": "ru-harness-ng-k8s-deploy",
+            "inputSetReferences": [],
+            "runtimeInput": {
+              "artifactTag": "latest"
+            }
+          }'
+
+      - name: Trigger Harness Deployment
+        run: |
+          RESPONSE=$(curl -X POST "https://app.harness.io/gateway/pipeline/api/v1/execution" \
           -H "x-api-key: ${{ secrets.HARNESS_NG_API_TOKEN }}" \
           -H "Content-Type: application/json" \
           -d '{
@@ -21,4 +34,7 @@ jobs:
                 "runtimeInput": {
                   "artifactTag": "latest"
                 }
-              }'
+              }')
+
+          echo "Harness Response: $RESPONSE"
+
