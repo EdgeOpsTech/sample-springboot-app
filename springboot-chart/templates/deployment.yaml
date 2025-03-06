@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "springboot-chart.fullname" . }}
+  labels:
+    app: {{ include "springboot-chart.name" . }}
+    chart: {{ include "springboot-chart.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "springboot-chart.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "springboot-chart.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: {{ .Values.env.SPRING_PROFILES_ACTIVE }}
+            - name: DATABASE_URL
+              value: {{ .Values.env.DATABASE_URL }}
+            - name: DATABASE_USERNAME
+              value: {{ .Values.env.DATABASE_USERNAME }}
+            - name: DATABASE_PASSWORD
+              value: {{ .Values.env.DATABASE_PASSWORD }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

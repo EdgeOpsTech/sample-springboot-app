@@ -16,12 +16,12 @@ service:
                 spec:
                   connectorRef: harnessgitconnector
                   gitFetchType: Branch
-                  folderPath: /sample-springboot-app
+                  folderPath: /
                   repoName: EdgeOpsTech/sample-springboot-app
                   branch: main
-              subChartPath: ""
+              subChartPath: null
               valuesPaths:
-                - /sample-springboot-app/values.yaml
+                - values.yaml
               skipResourceVersioning: false
               enableDeclarativeRollback: false
               helmVersion: V3

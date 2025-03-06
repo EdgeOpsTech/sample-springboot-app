@@ -1,28 +1,13 @@
-service:
+apiVersion: v1
+kind: Service
+metadata:
   name: sample-springboot-service
-  identifier: sample-springboot-service
-  orgIdentifier: default
-  projectIdentifier: GHCR_Demo_Project
-  serviceDefinition:
-    type: Kubernetes
-    spec:
-      manifests:
-        - manifest:
-            identifier: springboot-manifest
-            type: HelmChart
-            spec:
-              store:
-                type: Github
-                spec:
-                  connectorRef: harnessgitconnector
-                  gitFetchType: Branch
-                  folderPath: /sample-springboot-app
-                  repoName: EdgeOpsTech/sample-springboot-app
-                  branch: main
-              subChartPath: ""
-              valuesPaths:
-                - /sample-springboot-app/values.yaml
-              skipResourceVersioning: false
-              enableDeclarativeRollback: false
-              helmVersion: V3
-  gitOpsEnabled: false
+  namespace: default
+spec:
+  selector:
+    app: sample-springboot
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
