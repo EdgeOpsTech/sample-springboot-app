@@ -1,14 +1,14 @@
 service:
-  name: sample-springboot-service
-  identifier: sample-springboot-service
+  name: harness_guestbook
+  identifier: harnessguestbook
   orgIdentifier: default
-  projectIdentifier: GHCR_Demo_Project
+  projectIdentifier: default_project
   serviceDefinition:
-    type: Kubernetes
+    type: NativeHelm
     spec:
       manifests:
         - manifest:
-            identifier: springboot-manifest
+            identifier: guestbook
             type: HelmChart
             spec:
               store:
@@ -16,12 +16,12 @@ service:
                 spec:
                   connectorRef: harnessgitconnector
                   gitFetchType: Branch
-                  folderPath: /sample-springboot-app
-                  repoName: EdgeOpsTech/sample-springboot-app
-                  branch: main
+                  folderPath: helm-guestbook
+                  repoName: harnesscd-example-apps
+                  branch: master
               subChartPath: ""
               valuesPaths:
-                - /sample-springboot-app/values.yaml
+                - helm-guestbook/values.yaml
               skipResourceVersioning: false
               enableDeclarativeRollback: false
               helmVersion: V3
