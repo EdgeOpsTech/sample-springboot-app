@@ -63,28 +63,28 @@ jobs:
         run: |
           docker push ghcr.io/$REPO_OWNER/sample-springboot-app:latest
           docker push ghcr.io/$REPO_OWNER/sample-springboot-app:${{ github.run_number }}
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Download JAR Artifact (Optional)
-        uses: actions/download-artifact@v4
-        with:
-          name: springboot-app-jar
-          path: target/
+  #   steps:
+  #     - name: Download JAR Artifact (Optional)
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: springboot-app-jar
+  #         path: target/
 
-      - name: Trigger Harness Deployment
-        run: |
-          curl -X POST "https://app.harness.io/gateway/pipeline/api/v1/execution" \
-          -H "x-api-key: ${{ secrets.HARNESS_NG_API_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -d '{
-                "orgIdentifier": "default",
-                "projectIdentifier": "GHCR_Demo_Project",
-                "pipelineIdentifier": "ru-harness-ng-k8s-deploy",
-                "inputSetReferences": [],
-                "runtimeInput": {
-                  "artifactTag": "latest"
-                }
-              }'
+  #     - name: Trigger Harness Deployment
+  #       run: |
+  #         curl -X POST "https://app.harness.io/gateway/pipeline/api/v1/execution" \
+  #         -H "x-api-key: ${{ secrets.HARNESS_NG_API_TOKEN }}" \
+  #         -H "Content-Type: application/json" \
+  #         -d '{
+  #               "orgIdentifier": "default",
+  #               "projectIdentifier": "GHCR_Demo_Project",
+  #               "pipelineIdentifier": "ru-harness-ng-k8s-deploy",
+  #               "inputSetReferences": [],
+  #               "runtimeInput": {
+  #                 "artifactTag": "latest"
+  #               }
+  #             }'
