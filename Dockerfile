@@ -1,9 +1,8 @@
 # Define build arguments
-ARG SOURCE_REGISTRY=ghcr.io
-ARG SOURCE_IMAGE=edgeopstech/sample-springboot-app
-ARG SOURCE_IMAGE_TAG=latest
+ARG SOURCE_REGISTRY
+ARG SOURCE_IMAGE
+ARG SOURCE_IMAGE_TAG
 
-# Use the provided build arguments in FROM
 FROM ${SOURCE_REGISTRY}/${SOURCE_IMAGE}:${SOURCE_IMAGE_TAG} AS base
 
 # Use OpenJDK as the runtime base image
