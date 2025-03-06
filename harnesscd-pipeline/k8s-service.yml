@@ -21,7 +21,7 @@ service:
                   branch: main
               subChartPath: ""
               valuesPaths:
-                - /sprigboot-chart/values.yaml
+                - sprigboot-chart/values.yaml
               skipResourceVersioning: false
               enableDeclarativeRollback: false
               helmVersion: V3
