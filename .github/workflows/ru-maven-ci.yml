@@ -30,6 +30,9 @@ jobs:
           name: springboot-app-jar
           path: target/*.jar
 
+      - name: Convert repository owner to lowercase
+        run: echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Log in to GitHub Container Registry (GHCR)
         run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
@@ -49,16 +52,17 @@ jobs:
       - name: Build and Tag Docker Image
         run: |
           docker build \
-            --build-arg SOURCE_REGISTRY=$SOURCE_REGISTRY \
-            --build-arg SOURCE_IMAGE=$SOURCE_IMAGE \
-            --build-arg SOURCE_IMAGE_TAG=$SOURCE_IMAGE_TAG \
+            --build-arg SOURCE_REGISTRY=ghcr.io \
+            --build-arg SOURCE_IMAGE=$REPO_OWNER/sample-springboot-app \
+            --build-arg SOURCE_IMAGE_TAG=latest \
             -t ghcr.io/$REPO_OWNER/sample-springboot-app:latest .
+
+          docker tag ghcr.io/$REPO_OWNER/sample-springboot-app:latest ghcr.io/$REPO_OWNER/sample-springboot-app:${{ github.run_number }}
 
       - name: Push Docker Image to GHCR
         run: |
           docker push ghcr.io/$REPO_OWNER/sample-springboot-app:latest
           docker push ghcr.io/$REPO_OWNER/sample-springboot-app:${{ github.run_number }}
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
