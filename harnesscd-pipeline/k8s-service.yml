@@ -16,7 +16,7 @@ service:
                 spec:
                   connectorRef: harnessgitconnector
                   gitFetchType: Branch
-                  folderPath: /
+                  folderPath: springboot-chart
                   repoName: sample-springboot-app
                   branch: main
               subChartPath: ""
