@@ -10,4 +10,4 @@ ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/release
 
 EXPOSE 9090
 
-ENTRYPOINT ["java", "-javaagent:/opt/opentelemetry-javaagent.jar", "-jar", "/opt/app.jar"]
+ENTRYPOINT ["java", "-jar", "/opt/app.jar"]
